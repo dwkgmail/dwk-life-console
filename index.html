@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0f14">
+  <title>DWK Life OS｜丁文凯个人生活控制台</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="brand-mark">D</span>
+        <div><strong>DWK Life OS</strong><small>个人生活控制台</small></div>
+      </div>
+      <nav class="nav" aria-label="主导航">
+        <button class="nav-item active" data-page="dashboard"><span>⌂</span>首页总览</button>
+        <button class="nav-item" data-page="health"><span>♥</span>健康记录</button>
+        <button class="nav-item" data-page="finance"><span>¥</span>财务管理</button>
+        <button class="nav-item" data-page="motor"><span>◇</span>摩托车管理</button>
+        <button class="nav-item" data-page="java"><span>J</span>Java 学习</button>
+        <button class="nav-item" data-page="ideas"><span>✦</span>点子管理</button>
+        <button class="nav-item" data-page="todos"><span>✓</span>待办事项</button>
+      </nav>
+      <div class="sidebar-foot"><span class="status-dot"></span> 数据仅保存在本机</div>
+    </aside>
+
+    <div class="main-wrap">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" aria-label="打开导航">☰</button>
+        <div class="page-heading"><p id="todayText"></p><h1 id="pageTitle">首页总览</h1></div>
+        <div class="top-actions">
+          <button class="button secondary reset-button" id="resetButton">恢复初始</button>
+          <button class="button secondary" id="importButton">导入数据</button>
+          <button class="button primary" id="exportButton">导出数据</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+      </header>
+      <main id="app" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header"><h2 id="modalTitle"></h2><button class="icon-button" id="modalClose" aria-label="关闭">×</button></div>
+      <form id="modalForm"><div class="modal-body" id="modalBody"></div><div class="modal-footer"><button type="button" class="button secondary" id="modalCancel">取消</button><button type="submit" class="button primary">保存</button></div></form>
+    </section>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
