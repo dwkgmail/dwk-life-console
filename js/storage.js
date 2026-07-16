@@ -19,7 +19,7 @@
     update(mutator) { mutator(this.data); this.save(); return this.data; },
     reset() { this.data=createDefaultData(); this.save(); return this.data; },
     exportJSON() {
-      const payload={ app:'DWK Life OS', exportedAt:new Date().toISOString(), version:1, data:clone(this.get()) };
+      const payload={ app:'DWK Life OS', exportedAt:new Date().toISOString(), version:2, data:clone(this.get()), vault:window.DWK_VAULT?.exportEncrypted()||null };
       return JSON.stringify(payload,null,2);
     },
     importJSON(text) {
@@ -29,7 +29,7 @@
       const required=['settings','accounts','transactions','health','motor','java','ideas','todos'];
       if(!data || typeof data!=='object' || required.some(k=>!(k in data))) throw new Error('这不是有效的 DWK Life OS 数据文件');
       if(!Array.isArray(data.accounts)||!Array.isArray(data.health)||!Array.isArray(data.todos)) throw new Error('数据结构不完整，无法导入');
-      this.data=clone(data); this.save(); return this.data;
+      this.data=clone(data);this.save();if(parsed.vault)window.DWK_VAULT?.importEncrypted(parsed.vault);return this.data;
     }
   };
   window.DWK_STORE=Store;

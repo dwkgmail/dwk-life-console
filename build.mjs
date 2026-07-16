@@ -7,6 +7,7 @@ const assets = [
   ["/js/data.js", "js/data.js", "text/javascript; charset=utf-8"],
   ["/js/utils.js", "js/utils.js", "text/javascript; charset=utf-8"],
   ["/js/storage.js", "js/storage.js", "text/javascript; charset=utf-8"],
+  ["/js/vault.js", "js/vault.js", "text/javascript; charset=utf-8"],
   ["/js/ui.js", "js/ui.js", "text/javascript; charset=utf-8"],
   ["/js/app.js", "js/app.js", "text/javascript; charset=utf-8"],
 ];
