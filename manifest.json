@@ -1,0 +1,1 @@
+{"name":"DWK Life OS 3.0｜个人生活控制台","short_name":"DWK Life 3","description":"由 MySQL 安全持久化的个人生活控制台","lang":"zh-CN","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#090d12","theme_color":"#0b0f14","icons":[{"src":"icons/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}

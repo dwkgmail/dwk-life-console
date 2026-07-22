@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: dwk_life_os
+      MYSQL_USER: dwk
+      MYSQL_PASSWORD: ${DB_PASSWORD:-dwk_change_me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_change_me}
+      TZ: Asia/Shanghai
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h 127.0.0.1 -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} -e 'SELECT 1' $${MYSQL_DATABASE} >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  backend:
+    image: dwk-life-console-backend:latest
+    build: ./backend
+    restart: on-failure
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/dwk_life_os?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+      DB_USERNAME: dwk
+      DB_PASSWORD: ${DB_PASSWORD:-dwk_change_me}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123456}
+      TOKEN_SECRET: ${TOKEN_SECRET:-please-change-this-local-token-secret-32chars}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+  frontend:
+    image: dwk-life-console-frontend:latest
+    build: .
+    ports:
+      - "${FRONTEND_BIND:-0.0.0.0}:${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+volumes:
+  mysql_data:
