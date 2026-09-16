@@ -7,8 +7,14 @@
     const headers={'Content-Type':'application/json',...(options.headers||{})};
     if(token)headers.Authorization='Bearer '+token;
     const response=await fetch('/api'+path,{...options,headers});
-    if(response.status===401||response.status===403){if(path!=='/auth/login')showLogin();throw new Error('登录已失效，请重新登录')}
-    if(!response.ok){let detail={};try{detail=await response.json()}catch{}throw new Error(detail.message||`请求失败（${response.status}）`)}
+    if(!response.ok){
+      let detail={};try{detail=await response.json()}catch{}
+      if(response.status===401||response.status===403){
+        if(path==='/auth/login')throw new Error(detail.message||'用户名或密码错误');
+        showLogin();throw new Error('登录已失效，请重新登录');
+      }
+      throw new Error(detail.message||`请求失败（${response.status}）`);
+    }
     return response.status===204?null:response.json();
   }
   function showLogin(message=''){

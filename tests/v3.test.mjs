@@ -1,10 +1,30 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import vm from 'node:vm';
 
 test('3.0 前端使用登录和 REST API',async()=>{
   const [html,api,store]=await Promise.all(['../index.html','../js/api.js','../js/storage.js'].map(x=>readFile(new URL(x,import.meta.url),'utf8')));
   assert.match(html,/loginForm/);assert.match(html,/js\/api\.js/);assert.match(api,/Authorization/);assert.match(api,/\/api/);assert.match(store,/Api\.get\('\/data'\)/);assert.match(store,/migrations\/v2-json/);
+});
+test('错误密码显示后端返回的明确提示',async()=>{
+  const api=await readFile(new URL('../js/api.js',import.meta.url),'utf8');
+  const loginError={textContent:''},loginGate={hidden:true},button={disabled:false};
+  let submit;
+  const form={querySelector:()=>button,addEventListener:(type,handler)=>{if(type==='submit')submit=handler}};
+  const appShell={classList:{add(){},remove(){}}};
+  const sessionStorage={getItem(){return null},setItem(){},removeItem(){}};
+  class FormData{*[Symbol.iterator](){yield ['username','admin'];yield ['password','wrong-password']}}
+  const document={
+    getElementById:id=>({loginForm:form,loginGate,loginError})[id],
+    querySelector:selector=>selector==='.app-shell'?appShell:null
+  };
+  const fetch=async()=>({status:401,ok:false,json:async()=>({message:'用户名或密码错误'})});
+  const context={window:{},document,sessionStorage,FormData,fetch,location:{reload(){}}};
+  vm.runInNewContext(api,context);
+  await submit({preventDefault(){},target:form});
+  assert.equal(loginError.textContent,'用户名或密码错误');
+  assert.equal(button.disabled,false);
 });
 test('3.0 保留移动适配、图表和 V2 快照',async()=>{
   const [css,ui,v2]=await Promise.all(['../css/style.css','../js/ui.js','../v2/js/storage.js'].map(x=>readFile(new URL(x,import.meta.url),'utf8')));
